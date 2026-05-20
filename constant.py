@@ -1,5 +1,6 @@
 BOTTOM_GBR_PATH = 'pcb-source/bottom.gbr'
 BOTTOM_SVG_PATH = 'pcb-source/bottom.svg'
 TOP_GBR_PATH = 'pcb-source/Top.gbr'
+TOP_SVG_PATH = 'pcb-source/Top.svg'
 OUTPUT_SVG_PATH = 'pcb-source/output.svg'
 DRILL_GBR_PATH = 'pcb-source/drill.gbr'

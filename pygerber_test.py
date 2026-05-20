@@ -1,6 +1,6 @@
 from pygerber.gerber.api import GerberFile
 from pygerber.vm.shapely import ShapelyVirtualMachine
-from constant import BOTTOM_GBR_PATH, TOP_GBR_PATH, DRILL_GBR_PATH
+from constant import BOTTOM_GBR_PATH, TOP_GBR_PATH, DRILL_GBR_PATH, TOP_SVG_PATH, BOTTOM_SVG_PATH
 
 
 class GetDrillVirtualMachine(ShapelyVirtualMachine):
@@ -26,6 +26,9 @@ gerber_drill = GerberFile.from_file(DRILL_GBR_PATH)
 shapely_image_bot = gerber_bot.render_with_shapely()
 shapely_image_top = gerber_top.render_with_shapely()
 drill_points = get_drill_points(gerber_drill)
+
+shapely_image_top.save_svg(TOP_SVG_PATH)
+shapely_image_bot.save_svg(BOTTOM_SVG_PATH)
 
 print(f"\nНайдено отверстий (D03): {len(drill_points)}")
 for i, (x, y) in enumerate(drill_points, 1):

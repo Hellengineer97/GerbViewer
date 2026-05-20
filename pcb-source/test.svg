@@ -1,0 +1,9 @@
+<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        svg:has(.box:hover) .box {
+            fill: orange;
+        }
+    </style>
+    <rect class="box" x="40" y="25" width="50" height="50" fill="grey" />
+    <circle class="box" cx="200" cy="50" r="30" fill="blue" />
+</svg>
