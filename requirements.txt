@@ -10,7 +10,7 @@ pillow==12.2.0
 pipreqs==0.4.13
 pydantic==2.13.4
 pydantic_core==2.46.4
-pygerber==2.4.3
+pygerber @ git+https://github.com/Argmaster/pygerber@5446d44d424897e1b1a68c48c160ed9b4e828f44
 pyparsing==3.3.2
 requests==2.33.1
 shapely==2.1.2

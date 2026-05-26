@@ -1,4 +1,4 @@
-BOTTOM_GBR_PATH = 'pcb-source/bottom.gbr'
+BOTTOM_GBR_PATH = 'pcb-source/Bottom.gbr'
 BOTTOM_SVG_PATH = 'pcb-source/bottom.svg'
 TOP_GBR_PATH = 'pcb-source/Top.gbr'
 TOP_SVG_PATH = 'pcb-source/Top.svg'
