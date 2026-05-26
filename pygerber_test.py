@@ -1,5 +1,6 @@
 from pygerber.gerber.api import GerberFile
 from pygerber.vm.shapely import ShapelyVirtualMachine
+from shapely.geometry.polygon import Polygon
 from constant import BOTTOM_GBR_PATH, TOP_GBR_PATH, DRILL_GBR_PATH, TOP_SVG_PATH, BOTTOM_SVG_PATH
 
 
@@ -12,12 +13,56 @@ class GetDrillVirtualMachine(ShapelyVirtualMachine):
         # Ловим D03, забираем чистый вектор центра
         self.drill_points.append((command.center.x, command.center.y))
        
+class CustomPolygon:
+    def __init__(self, poly_object):
+        self._poly = poly_object
+    def __getattr__(self, name):
+        return getattr(self._poly, name)
+    
+    def svg(self):
+        if self.is_empty:
+            return "<g />"
+            
+        exterior_coords = ["{},{}".format(*c) for c in self.exterior.coords]
+        interior_coords = [
+            ["{},{}".format(*c) for c in interior.coords] for interior in self.interiors
+        ]
+        
+        all_rings = [exterior_coords] + interior_coords
+        path_segments = []
+        for coords in all_rings:
+            if len(coords) > 0:
+                path_segments.append(f"M {coords[0]} L {' '.join(coords[1:])} Z")
+                
+        path = " ".join(path_segments)
+        return f'<path d="{path}" />'
+
 
 def get_drill_points(gerberfile: GerberFile) -> list:    
     rvmc = gerberfile._get_rvmc()
     get_drill_vm = GetDrillVirtualMachine()
     get_drill_vm.run(rvmc)
     return get_drill_vm.drill_points
+
+def print_drill(drill_points):
+    print(f"\nНайдено отверстий (D03): {len(drill_points)}")
+    for i, (x, y) in enumerate(drill_points, 1):
+        print(f"#{i}: X={x}, Y={y}")
+
+def print_shaperesult(gerberfile: GerberFile):
+    rvmc = gerberfile._get_rvmc()
+    shvm = ShapelyVirtualMachine()
+    shapely_result = shvm.run(rvmc)
+    print(shapely_result.shape.svg())
+
+def print_multipol(gerberfile: GerberFile):
+    rvmc = gerberfile._get_rvmc()
+    shvm = ShapelyVirtualMachine()
+    shapely_result = shvm.run(rvmc)
+    geom = CustomPolygon(shapely_result.shape.geoms[0])
+    print(geom.svg())
+    print(type(geom)) 
+    #print(len(geoms))
 
 gerber_bot = GerberFile.from_file(BOTTOM_GBR_PATH)
 gerber_top = GerberFile.from_file(TOP_GBR_PATH)
@@ -30,6 +75,8 @@ drill_points = get_drill_points(gerber_drill)
 shapely_image_top.save_svg(TOP_SVG_PATH)
 shapely_image_bot.save_svg(BOTTOM_SVG_PATH)
 
-print(f"\nНайдено отверстий (D03): {len(drill_points)}")
-for i, (x, y) in enumerate(drill_points, 1):
-    print(f"#{i}: X={x}, Y={y}")
+print_multipol(gerber_top)
+
+
+
+
