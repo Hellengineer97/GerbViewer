@@ -30,13 +30,13 @@ viewBox="{0:.1f} {1:.1f} {2:.1f} {3:.1f}" preserveAspectRatio="xMinYMin meet">
 
     boardview = BoardView([
          slot72layer1, 
-        #  slot72layer2,
-        #  slot72layer3,
-        #  slot72layer4,
-        #  slot72layer5,
-        #  slot72layer6,
-        #  slot72layer7,
-        #  slot72layer8,
+         slot72layer2,
+         slot72layer3,
+         slot72layer4,
+         slot72layer5,
+         slot72layer6,
+         slot72layer7,
+         slot72layer8,
          drillgergber], 
          drillgergber)
 
