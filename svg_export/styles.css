@@ -1,0 +1,26 @@
+svg {
+    /* shape-rendering: optimizeSpeed; */
+}
+
+path {
+    pointer-events: all;
+    outline: none !important;
+    transition: none !important;
+}
+
+.highlight {
+    fill: red !important;
+    stroke: #FF4500 !important;
+    stroke-width: 0.2;
+}
+
+/* Цвета слоёв */
+.layer1 path  { fill: orange; }
+.layer2 path  { fill: green; }
+.layer3 path  { fill: gray; }
+.layer4 path  { fill: pink; }
+.layer5 path  { fill: blue; }
+.layer6 path  { fill: yellow; }
+.layer7 path  { fill: #1E90FF; }
+.layer8 path  { fill: #20B2AA; }
+.layer9 path  { fill: black; }
