@@ -15,12 +15,14 @@ path {
 }
 
 /* Цвета слоёв */
-.layer1 path  { fill: orange; }
-.layer2 path  { fill: green; }
-.layer3 path  { fill: gray; }
-.layer4 path  { fill: pink; }
-.layer5 path  { fill: blue; }
-.layer6 path  { fill: yellow; }
-.layer7 path  { fill: #1E90FF; }
-.layer8 path  { fill: #20B2AA; }
-.layer9 path  { fill: black; }
+.layer1 path  { fill: #88a782; } /* Терракотовый красный */
+.layer2 path  { fill: #a87f7f; } /* Мягкий оранжевый */
+.layer3 path  { fill: #FCBF49; display: none; } /* Песочно-желтый */
+.layer4 path  { fill: #406cff; display: none; } /* Кремовый */
+.layer5 path  { fill: #afff54; display: none; } /* Пыльно-голубой */
+.layer6 path  { fill: #d2ff68; display: none; } /* Сине-стальной */
+.layer7 path  { fill: #46ff5f; display: none; } /* Глубокий морской */
+.layer8 path  { fill: #41ffb6; display: none; } /* Матовый зеленый */
+.layer9 path  { fill: #47cbff; display: none; } /* Очень темный сине-зеленый */
+.layer10 path { fill: #e356ff; display: none; } /* Антрацит */
+.layer11 path { fill: #444444; } /* Насыщенный черный */

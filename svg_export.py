@@ -16,7 +16,7 @@ viewBox="{0:.1f} {1:.1f} {2:.1f} {3:.1f}" preserveAspectRatio="xMinYMin meet">
     """
     svg_body=''
     svg_end = """
-    </g><script xlink:href="script.js"></script></svg>
+    </g><script type="text/javascript" xlink:href="svg-pan-zoom.min.js"></script><script xlink:href="script.js"></script></svg>
 """
     slot72layer1 = GerberFile.from_file("gbr_source/1(slot72)_copper_top.gbr")
     slot72layer2 = GerberFile.from_file("gbr_source/2(slot72)_copper_top.gbr")
@@ -26,9 +26,13 @@ viewBox="{0:.1f} {1:.1f} {2:.1f} {3:.1f}" preserveAspectRatio="xMinYMin meet">
     slot72layer6 = GerberFile.from_file("gbr_source/6(slot72)_copper_top.gbr")
     slot72layer7 = GerberFile.from_file("gbr_source/7(slot72)_copper_top.gbr")
     slot72layer8 = GerberFile.from_file("gbr_source/8(slot72)_copper_top.gbr")
+    Top = GerberFile.from_file("gbr_source/Bottom_copper_top.gbr")
+    Bottom = GerberFile.from_file("gbr_source/Top_copper_top.gbr")
     drillgergber = GerberFile.from_file("gbr_source/drills_copper_top.gbr")
 
     boardview = BoardView([
+         Top,
+         Bottom,
          slot72layer1, 
          slot72layer2,
          slot72layer3,
