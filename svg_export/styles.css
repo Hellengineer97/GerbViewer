@@ -14,15 +14,27 @@ path {
     stroke-width: 0.2;
 }
 
-/* Цвета слоёв */
-.layer1 path  { fill: #88a782; } /* Терракотовый красный */
-.layer2 path  { fill: #a87f7f; } /* Мягкий оранжевый */
-.layer3 path  { fill: #FCBF49; display: none; } /* Песочно-желтый */
-.layer4 path  { fill: #406cff; display: none; } /* Кремовый */
-.layer5 path  { fill: #afff54; display: none; } /* Пыльно-голубой */
-.layer6 path  { fill: #d2ff68; display: none; } /* Сине-стальной */
-.layer7 path  { fill: #46ff5f; display: none; } /* Глубокий морской */
-.layer8 path  { fill: #41ffb6; display: none; } /* Матовый зеленый */
-.layer9 path  { fill: #47cbff; display: none; } /* Очень темный сине-зеленый */
-.layer10 path { fill: #e356ff; display: none; } /* Антрацит */
-.layer11 path { fill: #444444; } /* Насыщенный черный */
+
+.layer1 path  { fill: #88a782; }
+.layer2 path  { fill: #a87f7f; }
+.layer3 path  { fill: #FCBF49; display: none; }
+.layer4 path  { fill: #406cff; display: none; }
+.layer5 path  { fill: #afff54; display: none; }
+.layer6 path  { fill: #d2ff68; display: none; }
+.layer7 path  { fill: #46ff5f; display: none; } 
+.layer8 path  { fill: #41ffb6; display: none; }
+.layer9 path  { fill: #47cbff; display: none; }
+.layer10 path { fill: #e356ff; display: none; }
+.layer11 path { fill: #444444; }
+
+/* .layer1 path {fill: #88a782;}
+.layer2 path {fill: #a87f7f;}
+.layer3 path {fill: #FCBF49;}
+.layer4 path {fill: #406cff;}
+.layer5 path {fill: #afff54;}
+.layer6 path {fill: #d2ff68;}
+.layer7 path {fill: #46ff5f;}
+.layer8 path {fill: #41ffb6;}
+.layer9 path {fill: #47cbff;}
+.layer10 path {fill: #e356ff;}
+.layer11 path {fill: #444444;} */

@@ -36,10 +36,11 @@ class CustomPolygon:
         if self.is_empty:
             return "<g />"
 
-        exterior_coords = ["{},{}".format(*c) for c in self.exterior.coords]
+        simplified_poly = self._poly.simplify(tolerance=0.05, preserve_topology=True)
+        exterior_coords = ["{:.2f},{:.2f}".format(*c) for c in simplified_poly.exterior.coords]
         interior_coords = [
-            ["{},{}".format(*c) for c in
-             interior.coords] for interior in self.interiors
+            ["{:.2f},{:.2f}".format(*c) for c in
+             interior.coords] for interior in simplified_poly.interiors
         ]
 
         all_rings = [exterior_coords] + interior_coords
@@ -248,8 +249,7 @@ class BoardView:
 
         else:  # Drill
             point = obj.point
-            # Используем buffer для надёжности (маленький!)
-            candidates_idx = tree.query(point.buffer(0.05), predicate='intersects')
+            candidates_idx = tree.query(point, predicate='intersects')
 
             for idx in candidates_idx:
                 candidate = all_objects[idx]
