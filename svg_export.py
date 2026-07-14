@@ -7,16 +7,18 @@ from Boardview import BoardView
 
 def CreateBoardViewSvg():
 
-    svg_boardview =''
+    svg_boardview = ''
     svg_head = """
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-viewBox="{0:.1f} {1:.1f} {2:.1f} {3:.1f}" preserveAspectRatio="xMinYMin meet">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{0:.1f} {1:.1f} {2:.1f} {3:.1f}" preserveAspectRatio="xMinYMin meet">
+    <script type="text/javascript" xlink:href="svg-pan-zoom.min.js"></script>
+    <script xlink:href="script.js"></script>
     <style>@import url("styles.css");</style>
     <g transform="matrix(1,0,0,-1,0,0)" class="layer1">
-    """
-    svg_body=''
+"""
+    svg_body = ''
     svg_end = """
-    </g><script type="text/javascript" xlink:href="svg-pan-zoom.min.js"></script><script xlink:href="script.js"></script></svg>
+    </g>
+</svg>
 """
     slot72layer1 = GerberFile.from_file("gbr_source/layer1.gbr")
     slot72layer2 = GerberFile.from_file("gbr_source/layer2.gbr")
