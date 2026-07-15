@@ -1,8 +1,9 @@
 from pygerber.gerber.api import GerberFile
 from pygerber.vm.shapely import ShapelyVirtualMachine
-from shapely.geometry import Point
+from shapely.geometry import Point, Polygon
 from shapely.strtree import STRtree
 from collections import deque
+from itertools import chain
 
 
 class GetDrillVirtualMachine(ShapelyVirtualMachine):
@@ -23,10 +24,10 @@ class GetDrillVirtualMachine(ShapelyVirtualMachine):
 
 class CustomPolygon:
     """
-    Переделанный класс полигона который генерит SVG элемент без лишнего мусора
+    Переделанный класс полигона который генерит SVG элемент без лишнего мусора.
     """
 
-    def __init__(self, poly_object):
+    def __init__(self, poly_object: Polygon):
         self._poly = poly_object
 
     def __getattr__(self, name):
@@ -35,46 +36,47 @@ class CustomPolygon:
     def svg(self, net_name: str):
         if self.is_empty:
             return "<g />"
-
-        simplified_poly = self._poly.simplify(tolerance=0.05, preserve_topology=True)
-        exterior_coords = ["{:.2f},{:.2f}".format(*c) for c in simplified_poly.exterior.coords]
-        interior_coords = [
-            ["{:.2f},{:.2f}".format(*c) for c in
-             interior.coords] for interior in simplified_poly.interiors
-        ]
-
-        all_rings = [exterior_coords] + interior_coords
-        path_segments = []
-        for coords in all_rings:
-            if len(coords) > 0:
-                path_segments.append(
-                    f"M {coords[0]} L {' '.join(coords[1:])} Z")
-
-        path = " ".join(path_segments)
-        return f'<path class="{net_name}" tabindex="0" d="{path}" />'
+        poly_simplify = self._poly.simplify(tolerance=0.05,
+                                            preserve_topology=True)
+        all_rings = chain((poly_simplify.exterior,),
+                          poly_simplify.interiors)
+        d = " ".join(
+            f"M {coords[0]} L {' '.join(coords[1:])} Z"
+            for ring in all_rings
+            for coords in [[f"{x:.2f},{y:.2f}" for x, y in ring.coords]]
+        )
+        return f'<path class="{net_name}" tabindex="0" d="{d}" />'
 
 
 class Trace:
-    """Класс одной дорожки"""
-    def __init__(self, shapely_polygon: CustomPolygon, layer = None):
+    """
+    Класс одной дорожки.
+
+    """
+
+    def __init__(self, shapely_polygon: CustomPolygon, layer=None):
         self.net = None
         self.shapely_polygon = shapely_polygon
         self.layer = layer
 
     def get_svg_path(self):
-        return self.shapely_polygon.svg(self.net.name if self.net else "NoNameNet")
+        return self.shapely_polygon.svg(
+            self.net.name if self.net else "NoNameNet")
 
 
 class Drill:
-    """Класс одного отверстия на плате, соединяющего дорожки"""
+    """
+    Класс одного отверстия на плате, соединяющего дорожки.
+    Можно подсунуть ему либо Point, либо x, y.
+    Drill(Point)
+    Drill(x, y)
+    """
+
     def __init__(self, point: Point = None, x: float = None, y: float = None):
         if point is not None:
             self.point = point
         elif x is not None and y is not None:
             self.point = Point(x, y)
-        else:
-            raise ValueError(
-                "Необходимо передать либо объект point, либо координаты x и y")
 
         self.net = None
         self.connections = {}
@@ -90,6 +92,7 @@ class Drill:
 
 class Net:
     """Тут описаны связи между дорожками и отверстиями"""
+
     def __init__(self, name: str):
         self.name = name
         self.traces = set()
@@ -106,7 +109,7 @@ class Net:
     def __repr__(self):
         """Красивое отображение цепи при выводе через print"""
         return f"Net({self.name}, Polygons: {
-            len(self.traces)}, Drills: {len(self.drills)})"
+        len(self.traces)}, Drills: {len(self.drills)})"
 
 
 class Layer:
@@ -128,12 +131,17 @@ class Layer:
             traces.append(trace)
         return traces
 
+
 class BoardBounds:
+    """
+    Границы boardview.
+    """
+
     def __init__(self,
-                 min_x = float('inf'),
-                 min_y = float('inf'),
-                 max_x = float('-inf'),
-                 max_y = float('-inf')
+                 min_x=float('inf'),
+                 min_y=float('inf'),
+                 max_x=float('-inf'),
+                 max_y=float('-inf')
                  ):
         self.min_x = min_x
         self.min_y = min_y
@@ -141,6 +149,7 @@ class BoardBounds:
         self.max_y = max_y
         self.width = max_x - min_x
         self.height = max_y - min_y
+
 
 class BoardView:
     def __init__(self,
@@ -164,8 +173,9 @@ class BoardView:
         return drills
 
     def get_layers(self, gerber_files: list[GerberFile]):
-        return [Layer(gf, name=f"layer_{i}") for i, gf in enumerate(gerber_files)]
-    
+        return [Layer(gf, name=f"layer_{i}") for i, gf in
+                enumerate(gerber_files)]
+
     def build_nets(self):
         """Основной метод построения сетей"""
         print("=== Запуск построения электрических сетей ===")
@@ -184,7 +194,7 @@ class BoardView:
             if isinstance(obj, Trace):
                 geoms.append(obj.shapely_polygon._poly)
             else:
-                geoms.append(obj.point)   # без буфера
+                geoms.append(obj.point)  # без буфера
 
         tree = STRtree(geoms)
         visited = set()
@@ -203,7 +213,8 @@ class BoardView:
 
         print(f"Готово! Создано сетей: {len(self.nets)}")
 
-    def _flood_fill(self, start_obj, current_net: Net, tree, visited, all_objects):
+    def _flood_fill(self, start_obj, current_net: Net, tree, visited,
+                    all_objects):
         queue = deque([start_obj])
         visited.add(start_obj)
 
@@ -216,7 +227,7 @@ class BoardView:
                 current_net.add_drill(current)
 
             neighbors = self._find_neighbors(current, tree, all_objects)
-            
+
             for neighbor in neighbors:
                 if neighbor not in visited:
                     visited.add(neighbor)
@@ -257,9 +268,12 @@ class BoardView:
                     neighbors.append(candidate)
 
         return neighbors
-    
+
     def calculate_bounds(self):
-        """Вычисляет габариты всей платы"""
+        """
+        Вычисляет габариты всей платы
+
+        """
         min_x = float('inf')
         min_y = float('inf')
         max_x = float('-inf')
@@ -270,7 +284,7 @@ class BoardView:
                 poly = trace.shapely_polygon._poly
                 if poly.is_empty or poly.bounds is None:
                     continue
-                
+
                 bounds = poly.bounds  # (minx, miny, maxx, maxy)
                 min_x = min(min_x, bounds[0])
                 min_y = min(min_y, bounds[1])
