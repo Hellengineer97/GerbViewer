@@ -27,7 +27,7 @@ function initMultiSelect() {
             // Сбрасываем таймер, пока идет активный зум или перетаскивание
             if (renderTimer) clearTimeout(renderTimer);
 
-            // Возвращаем идеальную четкость через 250мс после полной остановки
+            // Возвращаем идеальную четкость через 500мс после полной остановки
             renderTimer = setTimeout(() => {
                 svgElement.style.shapeRendering = 'geometricPrecision';
             }, 500);
@@ -56,7 +56,7 @@ function initMultiSelect() {
     paths.forEach(path => {
         path.style.cursor = 'pointer';
 
-        path.addEventListener('click', function(e) {
+        path.addEventListener('click', function (e) {
             const netClass = Array.from(this.classList).find(cls => cls.startsWith('net'));
             if (!netClass) return;
 
@@ -79,9 +79,7 @@ function initMultiSelect() {
     console.log('Boardview script loaded. Paths found:', paths.length);
 }
 
-// Запуск инициализации всей логики платы
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMultiSelect);
-} else {
+// Перехват загрузки карты от нашего svg-loader.js
+window.addEventListener('svg-loaded', () => {
     initMultiSelect();
-}
+});

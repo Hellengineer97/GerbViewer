@@ -14,7 +14,7 @@ path {
     stroke-width: 0.2;
 }
 
-
+/* 
 .layer1 path  { fill: #88a782; }
 .layer2 path  { fill: #a87f7f; }
 .layer3 path  { fill: #FCBF49; display: none; }
@@ -25,9 +25,9 @@ path {
 .layer8 path  { fill: #41ffb6; display: none; }
 .layer9 path  { fill: #47cbff; display: none; }
 .layer10 path { fill: #e356ff; display: none; }
-.layer11 path { fill: #444444; }
+.layer11 path { fill: #444444; } */
 
-/* .layer1 path {fill: #88a782;}
+.layer1 path {fill: #88a782;}
 .layer2 path {fill: #a87f7f;}
 .layer3 path {fill: #FCBF49;}
 .layer4 path {fill: #406cff;}
@@ -37,4 +37,4 @@ path {
 .layer8 path {fill: #41ffb6;}
 .layer9 path {fill: #47cbff;}
 .layer10 path {fill: #e356ff;}
-.layer11 path {fill: #444444;} */
+.layer11 path {fill: #444444;}

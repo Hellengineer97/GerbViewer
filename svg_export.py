@@ -13,7 +13,7 @@ def CreateBoardViewSvg():
     <script type="text/javascript" xlink:href="svg-pan-zoom.min.js"></script>
     <script xlink:href="script.js"></script>
     <style>@import url("styles.css");</style>
-    <g transform="matrix(1,0,0,-1,0,0)" class="layer1">
+    <g transform="matrix(1,0,0,-1,0,0)">
 """
     svg_body = ''
     svg_end = """
