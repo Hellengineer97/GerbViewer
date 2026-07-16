@@ -4,7 +4,6 @@ from pygerber.gerber.api import GerberFile
 from Boardview import BoardView
 
 
-
 def CreateBoardViewSvg():
 
     svg_boardview = ''
@@ -35,7 +34,7 @@ def CreateBoardViewSvg():
     boardview = BoardView([
          Top,
          Bottom,
-         slot72layer1, 
+         slot72layer1,
          slot72layer2,
          slot72layer3,
          slot72layer4,
@@ -43,7 +42,7 @@ def CreateBoardViewSvg():
          slot72layer6,
          slot72layer7,
          slot72layer8,
-         drillgergber], 
+         drillgergber],
          drillgergber)
 
     for i, layer in enumerate(boardview.layers):
@@ -54,9 +53,9 @@ def CreateBoardViewSvg():
             svg_body += "        " + path_svg + "\n"
         svg_body += '    </g>\n'
     
-    svg_head = svg_head.format(boardview.bounds.min_x, 
-                               boardview.bounds.min_y, 
-                               boardview.bounds.width, 
+    svg_head = svg_head.format(boardview.bounds.min_x,
+                               boardview.bounds.min_y,
+                               boardview.bounds.width,
                                boardview.bounds.height)
 
     svg_boardview+=svg_head+'\n'

@@ -11,22 +11,18 @@ class GetDrillVirtualMachine(ShapelyVirtualMachine):
     Переделанная вирт машина, чтобы вытягивать координаты отверстий.
     Обрабатывает только команду D03
     """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Список будет жить внутри конкретного экземпляра машины
-        self.drill_points = []
+        self.drill_points: list[Point] = []
 
     def on_paste_layer_eager(self, command):
-        # Ловим D03, забираем чистый вектор центра
-        self.drill_points.append((command.center.x, command.center.y))
+        self.drill_points.append(Point(command.center.xy))
 
 
 class CustomPolygon:
     """
     Переделанный класс полигона который генерит SVG элемент без лишнего мусора.
     """
-
     def __init__(self, poly_object: Polygon):
         self._poly = poly_object
 
@@ -51,9 +47,7 @@ class CustomPolygon:
 class Trace:
     """
     Класс одной дорожки.
-
     """
-
     def __init__(self, shapely_polygon: CustomPolygon, layer=None):
         self.net = None
         self.shapely_polygon = shapely_polygon
@@ -71,10 +65,9 @@ class Drill:
     Drill(Point)
     Drill(x, y)
     """
-
     def __init__(self, point: Point = None, x: float = None, y: float = None):
         if point is not None:
-            self.point = point
+            self.point: Point = point
         elif x is not None and y is not None:
             self.point = Point(x, y)
 
@@ -108,8 +101,8 @@ class Net:
 
     def __repr__(self):
         """Красивое отображение цепи при выводе через print"""
-        return f"Net({self.name}, Polygons: {
-        len(self.traces)}, Drills: {len(self.drills)})"
+        return (f"Net({self.name}, Polygons: {
+            len(self.traces)}, Drills: {len(self.drills)})")
 
 
 class Layer:
