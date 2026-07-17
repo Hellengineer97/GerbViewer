@@ -34,5 +34,6 @@
 * PyGerber 
 * shapely
 * svgelements 
+* Jinja2
 ---
 *Проект находится в стадии разработки.*
