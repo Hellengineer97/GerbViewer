@@ -1,0 +1,12 @@
+{% extends "base.svg" %}
+
+{% block content %}
+    <text x="50" y="50"
+          dominant-baseline="middle"
+          text-anchor="middle"
+          font-family="sans-serif"
+          font-size="6"
+          fill="black">
+        Плата не загружена
+    </text>
+{% endblock %}

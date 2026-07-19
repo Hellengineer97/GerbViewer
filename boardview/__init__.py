@@ -1,0 +1,1 @@
+from .boardview import Boardview

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BoardViewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interface.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+
+    <div class="map-wrapper">
+        <div id="controls-panel" class="controls"></div>
+        <script src="{{ url_for('static', filename='js/svg-loader.js') }}"></script>
+    </div>
+    <script src="{{ url_for('static', filename='js/svg-pan-zoom.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/buttons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

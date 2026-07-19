@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="{% if viewbox %}{{ viewbox | map('round', 1) | join(' ') }}{% else %}0 0 100 100{% endif %}"
+     preserveAspectRatio="xMinYMin meet">
+     {% block content %}{% endblock %}
+</svg>
