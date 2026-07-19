@@ -1,12 +1,12 @@
-import logging
-import math
-
-logger = logging.getLogger(__name__)
+from net_generator import NetGenerator
+from renderer import Renderer
+from logic_textolite import Board
 
 
 class Bounds:
     """
     Границы платы.
+    По дефолу зодаются с бесконечностями, которые надо потом просчитать.
     """
     def __init__(self,
                  min_x: float = float('inf'),
@@ -41,6 +41,30 @@ class Bounds:
         return (self.min_x, self.min_y, self.width, self.height)
 
 
-class Board:
-    def __init__(self, bounds: Bounds | None = None):
-        self.bounds = bounds if bounds is not None else Bounds()
+class Boadview:
+    @property
+    def renderer(self) -> Renderer:
+        return self._renderer
+
+    @renderer.setter
+    def renderer(self, new_renderer: Renderer):
+        self._renderer = new_renderer
+        self._renderer.board = self.board
+
+    @property
+    def net_generator(self) -> NetGenerator:
+        return self._net_generator
+
+    @net_generator.setter
+    def net_generator(self, new_net_generator: NetGenerator):
+        self._net_generator = new_net_generator
+        self._net_generator.board = self.board
+
+    def __init__(self,
+                 board: Board,
+                 renderer: Renderer = None,
+                 net_generator: NetGenerator = None):
+        self.board = board
+        self._renderer = renderer or Renderer(board)
+        self._net_generator = net_generator or NetGenerator(board)
+

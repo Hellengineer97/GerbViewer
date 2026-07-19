@@ -1,4 +1,4 @@
-from board import Board
+from logic_textolite import Board
 
 
 class NetGenerator:
