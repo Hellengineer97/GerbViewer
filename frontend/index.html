@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>GerbViewer</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1e1e1e;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+        .zoom-layer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+        }
+        .zoom-layer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            shape-rendering: geometricPrecision;
+            text-rendering: geometricPrecision;
+        }
+        .interface-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .panel {
+            width: 280px;
+            height: calc(100vh - 40px);
+            background: rgba(45, 45, 45, 0.9);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            padding: 15px;
+            box-sizing: border-box;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="canvas-container">
+    <div class="zoom-layer">
+        <script src="svg-loader.js" data-src="BoardView.svg"></script>
+    </div>
+</div>
+<div class="interface-layer">
+    <div class="panel panel-left"></div>
+    <div class="panel panel-right"></div>
+</div>
+<script type="module">
+    import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    const container = d3.select("#canvas-container");
+    const zoomLayer = d3.select(".zoom-layer");
+    const svgElement = document.querySelector(".zoom-layer svg");
+    let debounceTimer;
+    const zoomBehavior = d3.zoom()
+        .scaleExtent([0.1, 100])
+        .on("start", () => {
+            zoomLayer.style("will-change", "transform");
+            clearTimeout(debounceTimer);
+        })
+        .on("zoom", (event) => {
+            zoomLayer.style("transform", `translate(${event.transform.x}px, ${event.transform.y}px) scale(${event.transform.k})`);
+        })
+        .on("end", () => {
+            debounceTimer = setTimeout(() => {
+                zoomLayer.style("will-change", "auto");
+            }, 500);
+        });
+    container.call(zoomBehavior);
+    function initView() {
+        const containerEl = document.getElementById("canvas-container");
+        const svgElement = document.querySelector(".zoom-layer svg");
+        if (!svgElement) return;
+        const width = containerEl.clientWidth;
+        const height = containerEl.clientHeight;
+        const viewBox = svgElement.viewBox.baseVal;
+        const boardWidth = viewBox.width || 400;
+        const boardHeight = viewBox.height || 300;
+        const scale = 0.85 / Math.max(boardWidth / width, boardHeight / height);
+        const translateX = (width - boardWidth * scale) / 2;
+        const translateY = (height - boardHeight * scale) / 2;
+        const initialTransform = d3.zoomIdentity
+            .translate(translateX, translateY)
+            .scale(scale);
+        container.transform(container, initialTransform);
+    }
+    window.addEventListener("svg-loaded", initView);
+    window.addEventListener("resize", initView);
+</script>
+</body>
+</html>
