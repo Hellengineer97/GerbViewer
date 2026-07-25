@@ -106,3 +106,13 @@ html, body {
 .resizer-left {
     left: -3px;
 }
+path {
+    pointer-events: all;
+    outline: none !important;
+    transition: none !important;
+}
+.highlight{
+    fill: red !important;
+    stroke: red !important;
+    stroke-width: 0.4;
+}
