@@ -8,6 +8,7 @@
     <script src="svg-uploader.js"></script>
     <script src="panel-resizer.js"></script>
     <script src="select-elements.js"></script>
+    <script src="generate-layer-panel.js"></script>
 </head>
 <body>
 <div id="canvas-container">
@@ -17,7 +18,28 @@
 </div>
 <div class="interface-layer">
     <div class="panel panel-left">
-        <div class="panel-content">
+        <div class="panel-body">
+            <div class="panel-title">Layers</div>
+            <div class="layer-list">
+                <div class="layer-row">
+                    <input type="color" class="layer-color-input" value="#cc7a00">
+                    <div class="layer-visible active"></div>
+                    <input type="number" class="layer-number-input" value="2" min="0" max="99">
+                    <div class="layer-name">Top Copper</div>
+                    <div class="layer-upload" title="Upload data to layer">⭡</div>
+                    <div class="layer-delete">×</div>
+                </div>
+                <div class="layer-row">
+                    <input type="color" class="layer-color-input" value="#d4af37">
+                    <div class="layer-visible"></div>
+                    <input type="number" class="layer-number-input" value="1" min="0" max="99">
+                    <div class="layer-name">Bottom Pads</div>
+                    <div class="layer-upload" title="Upload data to layer">⭡</div>
+                    <div class="layer-delete">×</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
             <input type="file" id="svg-upload-input" accept=".svg" style="display: none;">
             <button id="upload-btn" class="btn btn-primary">
                 Upload SVG File
