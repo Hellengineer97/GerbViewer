@@ -10,6 +10,7 @@
     <script src="select-elements.js"></script>
     <script src="generate-layer-panel.js"></script>
     <script src="svg-download.js"></script>
+    <script src="gbr-upload.js"></script>
 </head>
 <body>
 <div id="canvas-container">
@@ -22,31 +23,34 @@
         <div class="panel-body">
             <div class="panel-title">Layers</div>
             <div class="layer-list">
-                <div class="layer-row">
-                    <input type="color" class="layer-color-input" value="#cc7a00">
-                    <div class="layer-visible active"></div>
-                    <input type="number" class="layer-number-input" value="2" min="0" max="99">
-                    <div class="layer-name">Top Copper</div>
-                    <div class="layer-upload" title="Upload data to layer">⭡</div>
-                    <div class="layer-delete">×</div>
-                </div>
-                <div class="layer-row">
-                    <input type="color" class="layer-color-input" value="#d4af37">
-                    <div class="layer-visible"></div>
-                    <input type="number" class="layer-number-input" value="1" min="0" max="99">
-                    <div class="layer-name">Bottom Pads</div>
-                    <div class="layer-upload" title="Upload data to layer">⭡</div>
-                    <div class="layer-delete">×</div>
-                </div>
             </div>
         </div>
         <div class="panel-footer">
             <input type="file" id="svg-upload-input" accept=".svg" style="display: none;">
-            <button id="upload-btn" class="btn btn-primary">
-                Upload SVG File
+            <input type="file" id="gbr-upload-input" accept=".gbr" style="display: none;">
+            <div id="gbr-upload-container" class="gbr-transform-btn">
+                <div class="gbr-btn-label">Upload GBR File</div>
+                <div class="gbr-btn-options">
+                    <div class="gbr-option-item" data-type="SilkTop">SilkTop</div>
+                    <div class="gbr-option-item" data-type="PadsTop">PadsTop</div>
+                    <div class="gbr-option-item" data-type="CuTop">CuTop</div>
+                    <div class="gbr-option-item" data-type="Cu">Cu</div>
+                    <div class="gbr-option-item" data-type="CuBottom">CuBottom</div>
+                    <div class="gbr-option-item" data-type="PadsBottom">PadsBottom</div>
+                    <div class="gbr-option-item" data-type="SilkBottom">SilkBottom</div>
+                </div>
+            </div>
+            <button id="generate-net-btn" class="btn btn-primary">
+                Generate Net
+            </button>
+            <button id="render-svg-btn" class="btn btn-primary">
+                Render SVG
             </button>
             <button id="download-svg-btn" class="btn btn-primary">
                 Download SVG File
+            </button>
+            <button id="upload-svg-btn" class="btn btn-primary">
+                Upload SVG File
             </button>
         </div>
         <div class="resizer resizer-right"></div>

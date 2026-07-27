@@ -1,5 +1,5 @@
 function initSVGUpLoader() {
-    const uploadBtn = document.getElementById("upload-btn");
+    const uploadBtn = document.getElementById("upload-svg-btn");
     const fileInput = document.getElementById("svg-upload-input");
     const zoomLayerEl = document.querySelector(".zoom-layer");
     if (!uploadBtn || !fileInput || !zoomLayerEl) return;

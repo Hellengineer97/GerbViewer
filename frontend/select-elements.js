@@ -1,34 +1,44 @@
 let selectedNets = new Set();
+
+function getOrCreateHighlightLayer(svgMain) {
+    if (!svgMain) return null;
+    const transformGroup = svgMain.querySelector('g[transform^="matrix"]');
+    if (!transformGroup) return null;
+    let layer = transformGroup.querySelector('#selected-items');
+    if (!layer) {
+        const styles = 'pointer-events: none; fill: #ff7300; stroke: red; stroke-width: 0.1px;';
+        transformGroup.insertAdjacentHTML('beforeend', `<g id="selected-items" style="${styles}"></g>`);
+        layer = transformGroup.querySelector('#selected-items');
+    }
+    return layer;
+}
 function updateHighlights() {
-    document.querySelectorAll('.highlight').forEach(el => {
-        el.classList.remove('highlight');
-        if (el._originalParent) {
-            el._originalParent.appendChild(el);
-        }
-    });
+    const svgMain = document.querySelector('svg');
+    const highlightLayer = getOrCreateHighlightLayer(svgMain);
+    if (highlightLayer) {
+        highlightLayer.innerHTML = '';
+    }
+    if (selectedNets.size === 0) return;
     selectedNets.forEach(netClass => {
-        document.querySelectorAll('.' + netClass).forEach(el => {
-            el.classList.add('highlight');
-            const layerGroup = el.parentElement;
-            if (layerGroup) {
-                const mainContainer = layerGroup.parentElement;
-                if (mainContainer) {
-                    if (!el._originalParent) {
-                        el._originalParent = layerGroup;
-                    }
-                    mainContainer.appendChild(el);
-                }
+        const originalElements = document.querySelectorAll('.' + netClass);
+
+        originalElements.forEach(el => {
+            if (highlightLayer) {
+                const clone = el.cloneNode(true);
+                highlightLayer.appendChild(clone);
             }
         });
     });
 }
 function initMultiSelect() {
-    const paths = document.querySelectorAll('path[class^="net"]');
     const svgElement = document.querySelector('svg');
-    paths.forEach(path => {
-        path.style.cursor = 'pointer';
-        path.addEventListener('click', function (e) {
-            const netClass = Array.from(this.classList).find(cls => cls.startsWith('net'));
+    if (!svgElement) return;
+    const paths = svgElement.querySelectorAll('path[class^="net"]');
+    paths.forEach(path => path.style.cursor = 'pointer');
+    svgElement.addEventListener('click', function (e) {
+        const clickedPath = e.target.closest('path[class^="net"]');
+        if (clickedPath) {
+            const netClass = Array.from(clickedPath.classList).find(cls => cls.startsWith('net'));
             if (!netClass) return;
             if (e.ctrlKey || e.metaKey) {
                 if (selectedNets.has(netClass)) {
@@ -37,16 +47,24 @@ function initMultiSelect() {
                     selectedNets.add(netClass);
                 }
             } else {
-                selectedNets.clear();
-                selectedNets.add(netClass);
+                if (selectedNets.has(netClass) && selectedNets.size === 1) {
+                    selectedNets.clear();
+                } else {
+                    selectedNets.clear();
+                    selectedNets.add(netClass);
+                }
             }
-
             updateHighlights();
-            e.stopPropagation();
-        });
+        } else {
+            if (!e.ctrlKey && !e.metaKey) {
+                if (selectedNets.size > 0) {
+                    selectedNets.clear();
+                    updateHighlights();
+                }
+            }
+        }
     });
+
     console.log('Boardview script loaded. Paths found:', paths.length);
 }
-window.addEventListener('svg-loaded', () => {
-    initMultiSelect();
-});
+window.addEventListener('svg-loaded', () => {initMultiSelect();});

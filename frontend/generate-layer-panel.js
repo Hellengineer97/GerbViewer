@@ -19,7 +19,6 @@ function generateLayerPanel() {
             <div class="layer-up" title="Move Up">▲</div>
             <div class="layer-down" title="Move Down">▼</div>
             <div class="layer-name">${layerDisplayName}</div>
-            <div class="layer-upload" title="Upload data to layer">⭡</div>
             <div class="layer-delete">×</div>`;
         row.querySelector('.layer-color-input').addEventListener('input', (e) => {
             const newColor = e.target.value;
