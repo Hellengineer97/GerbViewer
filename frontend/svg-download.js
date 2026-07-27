@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const downloadUrl = URL.createObjectURL(blob);
         const downloadLink = document.createElement('a');
         downloadLink.href = downloadUrl;
-        downloadLink.download = 'map_layers_updated.svg'; // Имя файла при сохранении
+        downloadLink.download = 'boardview.svg';
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
