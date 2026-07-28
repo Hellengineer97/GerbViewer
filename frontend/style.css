@@ -5,6 +5,7 @@ html, body {
     height: 100%;
     overflow: hidden;
     background-color: #1e1e1e;
+    font-family: 'Inter', -apple-system, sans-serif; /* Единый шрифт для всего интерфейса */
 }
 #canvas-container {
     width: 100%;
@@ -61,7 +62,7 @@ html, body {
     flex-direction: column;
 }
 .panel-title {
-    font-family: 'Montserrat', 'Inter', -apple-system, sans-serif; /* Более интересный и современный шрифт */
+    font-family: 'Montserrat', 'Inter', -apple-system, sans-serif;
     width: 100%;
     padding: 10px 15px;
     font-size: 13px;
@@ -89,7 +90,7 @@ html, body {
     border: 1px solid #333;
     border-radius: 6px;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow: hidden; /* Запрещаем общий скролл, скроллятся только внутренние списки */
     margin-bottom: 15px;
     padding: 0;
 }
@@ -153,13 +154,34 @@ path {
     outline: none !important;
     transition: none !important;
 }
+
+/* --- ВЕРХНИЙ СПИСОК СЛОЕВ --- */
 .layer-list {
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
     box-sizing: border-box;
+    flex: 1;             /* Забирает всё свободное место и выталкивает очередь вниз */
+    overflow-y: auto;     /* Свой собственный аккуратный скроллбар */
 }
+
+/* Кастомизация скроллбара для списка слоев */
+.layer-list::-webkit-scrollbar {
+    width: 6px;
+}
+.layer-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+.layer-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+.layer-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(46, 204, 113, 0.6);
+}
+
 .layer-row {
     display: flex;
     align-items: center;
@@ -261,6 +283,77 @@ path {
     border: none;
     border-radius: 2px;
 }
+
+/* --- НИЖНЯЯ ОЧЕРЕДЬ ЗАГРУЗКИ ФАЙЛОВ --- */
+.upload-queue-list {
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid #333;
+    overflow-y: auto;
+
+    flex: 0 0 auto;       /* Строго: сжимается под контент, не растет в пустую серость */
+    max-height: 120px;    /* Лимит высоты ровно в 3 плашки, затем скролл */
+    transition: all 0.2s ease;
+}
+
+/* Полное скрытие блока, когда в нем физически нет разметки плашек */
+.upload-queue-list:empty {
+    max-height: 0;
+    padding: 0;
+    border-top: none;
+}
+
+/* Кастомизация скроллбара для очереди файлов */
+.upload-queue-list::-webkit-scrollbar {
+    width: 6px;
+}
+.upload-queue-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+.upload-queue-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+.upload-queue-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(46, 204, 113, 0.6);
+}
+
+/* Уникальный стиль плашки-заготовки файла в очереди */
+.layer-row.gbr-queue-row {
+    background-color: rgba(41, 128, 185, 0.08);
+    border: 1px dashed rgba(52, 152, 219, 0.4);
+    padding: 0 8px;
+    height: 32px;
+    min-height: 32px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+.layer-row.gbr-queue-row:hover {
+    background-color: rgba(41, 128, 185, 0.15);
+    border-color: rgba(52, 152, 219, 0.7);
+}
+
+/* Компактный информационный бэдж типа слоя */
+.gbr-queue-badge {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    background-color: #3498db;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    min-width: 68px;
+    text-align: center;
+    box-sizing: border-box;
+    line-height: 1.2;
+}
+
+/* --- КНОПКА ЗАГРУЗКИ GBR И ОПЦИИ --- */
 .gbr-transform-btn {
     width: 100%;
     height: 43px;
@@ -342,21 +435,17 @@ path {
 .gbr-transform-btn.expanded {
     height: 160px;
     background-color: #27ae60;
-    cursor: default;
-}
+    cursor: default;}
 .gbr-transform-btn.expanded .gbr-btn-label {
     opacity: 0;
     visibility: hidden;
     height: 0;
-    min-height: 0;
-}
+    min-height: 0;}
 .gbr-transform-btn.expanded .gbr-btn-options {
     opacity: 1;
     visibility: visible;
-    transition-delay: 0.05s;
-}
+    transition-delay: 0.05s;}
 #selected-items {
     fill: #ff7300 !important;
     stroke: red !important;
-    stroke-width: 0.1px !important;
-}
+    stroke-width: 0.1px !important;}

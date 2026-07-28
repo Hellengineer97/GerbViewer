@@ -22,7 +22,36 @@
     <div class="panel panel-left">
         <div class="panel-body">
             <div class="panel-title">Layers</div>
-            <div class="layer-list">
+            <div class="layer-list"></div>
+            <div class="upload-queue-list">
+                <div class="layer-row gbr-queue-row">
+                    <div class="gbr-queue-badge">SilkTop</div>
+                    <div class="layer-name" title="Copper_Top_Final_Generated.gbr">
+                        ...Final_Generated.gbr
+                    </div>
+                    <div class="layer-delete" title="Удалить из очереди">×</div>
+                </div>
+                <div class="layer-row gbr-queue-row">
+                    <div class="gbr-queue-badge">CuTop</div>
+                    <div class="layer-name" title="Main_Board_CuTop.gbr">
+                        ...Board_CuTop.gbr
+                    </div>
+                    <div class="layer-delete" title="Удалить из очереди">×</div>
+                </div>
+                <div class="layer-row gbr-queue-row">
+                    <div class="gbr-queue-badge">CuTop</div>
+                    <div class="layer-name" title="Main_Board_CuTop.gbr">
+                        ...Board_CuTop.gbr
+                    </div>
+                    <div class="layer-delete" title="Удалить из очереди">×</div>
+                </div>
+                <div class="layer-row gbr-queue-row">
+                    <div class="gbr-queue-badge">CuTop</div>
+                    <div class="layer-name" title="Main_Board_CuTop.gbr">
+                        ...Board_CuTop.gbr
+                    </div>
+                    <div class="layer-delete" title="Удалить из очереди">×</div>
+                </div>
             </div>
         </div>
         <div class="panel-footer">
@@ -38,16 +67,17 @@
                     <div class="gbr-option-item" data-type="CuBottom">CuBottom</div>
                     <div class="gbr-option-item" data-type="PadsBottom">PadsBottom</div>
                     <div class="gbr-option-item" data-type="SilkBottom">SilkBottom</div>
+                    <div class="gbr-option-item" data-type="Vias">Vias</div>
                 </div>
             </div>
             <button id="generate-net-btn" class="btn btn-primary">
-                Generate Net
+                Generate Net and Render
             </button>
             <button id="render-svg-btn" class="btn btn-primary">
-                Render SVG
+                Render Only
             </button>
             <button id="download-svg-btn" class="btn btn-primary">
-                Download SVG File
+                Save SVG File
             </button>
             <button id="upload-svg-btn" class="btn btn-primary">
                 Upload SVG File
