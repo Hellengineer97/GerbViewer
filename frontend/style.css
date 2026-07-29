@@ -64,12 +64,12 @@ html, body {
 .panel-title {
     font-family: 'Montserrat', 'Inter', -apple-system, sans-serif;
     width: 100%;
-    padding: 10px 15px;
+    padding-top: 10px;
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background-color: #2b2b2b;
+    background-color: #1f1f1f;
     color: #b0b0b0;
     box-sizing: border-box;
     text-align: center;
@@ -78,7 +78,6 @@ html, body {
     overflow: hidden;
     margin-bottom: 0;
     border: none;
-    border-bottom: 1px solid #333;
     border-radius: 0;
 }
 .panel-body {
@@ -291,8 +290,7 @@ path {
     flex-direction: column;
     gap: 6px;
     box-sizing: border-box;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid #333;
+    background-color: rgb(31 31 31);
     overflow-y: auto;
 
     flex: 0 0 auto;       /* Не растет в пустую серость, подстраивается под контент */
