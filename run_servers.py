@@ -24,7 +24,8 @@ processes = []
 
 def stream_output(name, stream):
     for line in iter(stream.readline, b""):
-        sys.stdout.write(f"[{name}] {line.decode('utf-8', 'replace')}".rstrip() + "\n")
+        sys.stdout.write(f"[{name}] {line.decode('utf-8', 'replace')}".rstrip(
+        ) + "\n")
     stream.close()
 
 

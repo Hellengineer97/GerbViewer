@@ -1,7 +1,7 @@
 """Геометрическое ядро печатной платы на базе Shapely."""
 
-from .point import Point
-from .shape import Shape
+from ..boardview.point import Point
+from ..boardview.shape import Shape
 
 from logic_textolite import (TextoliteSide, CuLayer, Pad, PadsLayer, SilkLayer,
                              Textolite, Trace, Via)

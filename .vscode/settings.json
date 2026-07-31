@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"e:/Python projects/GerbViewer\" && python - <<'PY'\nfrom pathlib import Path\np = Path\\('gerbviewlib/boardview/layer\\.py'\\)\nwith p\\.open\\('r', encoding='utf-8'\\) as f:\n    for i, line in enumerate\\(f, 1\\):\n        if 50 <= i <= 90:\n            print\\(f'\\{i:03d\\}: \\{line\\.rstrip\\(\\)\\}'\\)\nPY$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -9,7 +9,7 @@ from logic_textolite import Board
 class Bounds:
     """
     Границы платы.
-    По дефолу зодаются с бесконечностями, которые надо потом просчитать.
+    По дефолу задаются с бесконечностями, которые надо потом просчитать.
     """
     def __init__(self,
                  min_x: float = float('inf'),
@@ -70,4 +70,3 @@ class Boadview:
         self.board = board
         self._renderer = renderer or Renderer(board)
         self._net_generator = net_generator or NetGenerator(board)
-
