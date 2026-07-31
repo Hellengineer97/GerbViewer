@@ -1,4 +1,6 @@
 // gerbview_api.js
+const API_BASE = 'http://localhost:5000';
+
 document.addEventListener('DOMContentLoaded', () => {
     initRenderButton('render-svg-btn', '/render');
     initRenderButton('generate-net-btn', '/generate_net');
@@ -30,7 +32,7 @@ function initRenderButton(buttonId, endpoint) {
         });
 
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'POST',
                 body: formData
             });

@@ -1,3 +1,6 @@
+from asyncio.log import logger
+import math
+
 from net_generator import NetGenerator
 from renderer import Renderer
 from logic_textolite import Board
