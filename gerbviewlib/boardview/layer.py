@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any, Optional
 
@@ -46,9 +44,6 @@ class Layer(BaseLayer):
 
         self._parse_gerber()
 
-    def _unary_shapely_geometry(self) -> Optional[BaseGeometry]:
-        return self.pygerber_object.render_with_shapely()._result.shape
-
     def _split_geometries(
         self,
         geometry: Optional[BaseGeometry],
@@ -76,7 +71,8 @@ class CuLayer(BaseCuLayer, Layer):
     def _parse_gerber(self) -> None:
         self.traces = [
             Trace(Shape(shape))
-            for shape in self._split_geometries(self._unary_shapely_geometry())
+            for shape in self._split_geometries(
+                self._pygerber_object.render_with_shapely()._result.shape)
         ]
 
 
@@ -94,7 +90,8 @@ class SilkLayer(BaseSilkLayer, Layer):
     def _parse_gerber(self) -> None:
         self.shapes = [
             Shape(shape)
-            for shape in self._split_geometries(self._unary_shapely_geometry())
+            for shape in self._split_geometries(
+                self._pygerber_object.render_with_shapely()._result.shape)
         ]
 
 
@@ -112,7 +109,8 @@ class PadsLayer(BasePadsLayer, Layer):
     def _parse_gerber(self) -> None:
         self.pads = [
             Pad(shape=Shape(shape))
-            for shape in self._split_geometries(self._unary_shapely_geometry())
+            for shape in self._split_geometries(
+                self._pygerber_object.render_with_shapely()._result.shape)
         ]
 
 

@@ -4,6 +4,7 @@ from .shape import Shape
 from .trace import Trace
 from .via import Via
 from .layer import CuLayer, SilkLayer, PadsLayer, TextoliteSide, Layer
+from .textolite import Textolite
 
 __all__ = [
     'Pad',
@@ -16,4 +17,5 @@ __all__ = [
     'SilkLayer',
     'PadsLayer',
     'TextoliteSide',
+    'Textolite',
 ]
