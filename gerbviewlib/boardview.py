@@ -1,5 +1,5 @@
 from net_generator import NetGenerator
-from renderer import Renderer
+from gerbviewlib.renderer.renderer import Renderer
 from .boardview import Textolite
 
 
