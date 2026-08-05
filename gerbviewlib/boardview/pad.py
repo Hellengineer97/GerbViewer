@@ -1,3 +1,5 @@
+from shapely.geometry.base import BaseGeometry
+
 from logic_textolite import Pad as BasePad
 
 
@@ -15,3 +17,8 @@ class Pad(BasePad):
         self.net: str | None = net
         self.component: str | None = component
         self.name: str | None = name
+
+    @property
+    def shapely_geom(self) -> BaseGeometry:
+        """Возвращает низкоуровневый геометрический объект Shapely."""
+        return self.shape.shapely_geom

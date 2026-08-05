@@ -1,9 +1,10 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from typing import Tuple
-from xml.sax.saxutils import escape
 
 from ..boardview import Textolite
-
+from ..boardview import CuLayer
+from shapely.geometry import BaseGeometry
+from itertools import chain
 
 env = Environment(
     loader=FileSystemLoader('gerbviewlib/renderer/template'),
@@ -13,7 +14,37 @@ template = env.get_template('boardview_template.svg')
 
 
 class Renderer:
-    def _calculate_bounds(self, textolite: Textolite) -> Tuple[float, float, float, float]:
+    def get_path_svg_from_Shapely_geom(self,
+                                       shapely_geom: BaseGeometry,
+                                       net_name: str = 'NoNameNet') -> str:
+        """Генерирует path из Shapely геометрии"""
+        if shapely_geom.is_empty:
+            return ''
+        shapely_geom_simplify = shapely_geom.simplify(
+            tolerance=0.05,
+            preserve_topology=True,
+        )
+        all_rings = chain((shapely_geom_simplify.exterior,),
+                          shapely_geom_simplify.interiors)
+        d = ' '.join(
+            f"M {coords[0]} L {' '.join(coords[1:])} Z"
+            for ring in all_rings
+            for coords in [[f"{x:.2f},{y:.2f}" for x, y in ring.coords]]
+        )
+        return f'<path class="{net_name}" tabindex="0" d="{d}" />'
+
+    def get_g_svg_from_inner_Cu_layer(self, Cu_layer: CuLayer) -> str:
+        """Генерирует path из медного слоя и пакует в его g тег"""
+        paths = []
+        for trace in Cu_layer.traces:
+            path = self.get_path_svg_from_Shapely_geom(
+                trace.shapely_geom, trace.net)
+            paths.append(path)
+        return f'<g class="innerCuLayer">{"".join(paths)}</g>'
+
+    def calculate_bounds(self,
+                         textolite: Textolite
+                         ) -> Tuple[float, float, float, float]:
         """
         Вычисляет min_x, min_y, width, height по геометриям `textolite`.
         """
@@ -21,67 +52,30 @@ class Renderer:
         min_y = float('inf')
         max_x = float('-inf')
         max_y = float('-inf')
-        layers = list(textolite.inner_cu_layers)
-        layers.append(textolite.top_layer.cu)
-        layers.append(textolite.bottom_layer.cu)
-
-        for layer in layers:
-            for trace in layer.traces:
-                geom = trace.shape.shapely_geom
-                b = geom.bounds
-                min_x = min(min_x, b[0])
-                min_y = min(min_y, b[1])
-                max_x = max(max_x, b[2])
-                max_y = max(max_y, b[3])
-
-        width = max_x - min_x
-        height = max_y - min_y
-        return min_x, min_y, width, height
-
-    def _path_d(self, geom, min_x: float, min_y: float) -> str:
-        geom_type = geom.geom_type
-        if geom_type in ('LineString', 'LinearRing'):
-            coords = list(geom.coords)
-            d = f'M {coords[0][0] - min_x} {coords[0][1] - min_y}'
-            for x, y in coords[1:]:
-                d += f' L {x - min_x} {y - min_y}'
-            return d
-
-        if geom_type == 'Polygon':
-            exterior = list(geom.exterior.coords)
-            d = self._path_d(type('G', (), {'geom_type': 'LineString', 'coords': exterior}), min_x, min_y)
-            for interior in geom.interiors:
-                interior_coords = list(interior.coords)
-                d += ' ' + self._path_d(type('G', (), {'geom_type': 'LineString', 'coords': interior_coords}), min_x, min_y)
-            return d
-
-        if geom_type.startswith('Multi'):
-            return ' '.join(self._path_d(part, min_x, min_y) for part in geom.geoms)
-
-        return ''
-
-    def _render_layer(self, layer, min_x: float, min_y: float) -> str:
-        paths = []
-        for trace in layer.traces:
-            d = self._path_d(trace.shape.shapely_geom, min_x, min_y)
-            net_name = trace.net.name if trace.net is not None else 'none'
-            paths.append(
-                f'<path d="{escape(d)}" class="{escape(net_name)}" fill="none" stroke="#000" stroke-width="1" />'
-            )
-        layer_class = escape(layer.__class__.__name__)
-        return f'<g class="{layer_class}">{"".join(paths)}</g>'
+        all_shapely_geoms = []
+        for layer in textolite.all_layers:
+            if isinstance(layer, CuLayer):
+                for trace in layer.traces:
+                    all_shapely_geoms.append(trace.shapely_geom)
+        for shapely_geom in all_shapely_geoms:
+            b = shapely_geom.bounds
+            min_x = min(min_x, b[0])
+            min_y = min(min_y, b[1])
+            max_x = max(max_x, b[2])
+            max_y = max(max_y, b[3])
+        return min_x, min_y, max_x - min_x, max_y - min_y
 
     def renderSVG(self, textolite: Textolite) -> str:
-        min_x, min_y, width, height = self._calculate_bounds(textolite)
-        layers = list(textolite.inner_cu_layers)
-        layers.append(textolite.top_layer.cu)
-        layers.append(textolite.bottom_layer.cu)
-        content = ''.join(self._render_layer(layer, min_x, min_y) for layer in layers)
-        rendered = template.render(
+        min_x, min_y, width, height = self.calculate_bounds(textolite)
+        content = ''
+        for layer in textolite.all_layers:
+            if isinstance(layer, CuLayer):
+                content += self.get_g_svg_from_Cu_layer(layer)
+        rendered_svg = template.render(
             min_x=f"{min_x:.1f}",
             min_y=f"{min_y:.1f}",
             width=f"{width:.1f}",
             height=f"{height:.1f}",
             content=content,
         )
-        return rendered
+        return rendered_svg
