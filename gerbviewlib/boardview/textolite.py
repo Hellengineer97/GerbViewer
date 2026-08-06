@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 
-from .layer import CuLayer, Layer, TextoliteSide
-from .via import Via
+from .layer import InnerCuLayers, Layer, TextoliteSide, ViasLayer
 from ..logic_textolite.textolite import Textolite as BaseTextolite
 
 
@@ -15,10 +14,10 @@ class Textolite(BaseTextolite):
 
     def __init__(
         self,
-        inner_cu_layers: Optional[List[CuLayer]] = None,
-        top_layer: Optional[TextoliteSide] = None,
-        bottom_layer: Optional[TextoliteSide] = None,
-        vias: Optional[List[Via]] = None,
+        inner_cu_layers: InnerCuLayers | None = None,
+        top_layer: TextoliteSide | None = None,
+        bottom_layer: TextoliteSide | None = None,
+        vias: ViasLayer | None = None,
     ):
         super().__init__(
             inner_cu_layers=inner_cu_layers,

@@ -1,61 +1,68 @@
-from flask import Flask, Response, request
+"""
+Шрагалка по типам слев
+            TopSide      (SilkTop
+                        PadsTop
+                        CuTop
+            InnerLayers  list[Cu]
+            BottomSiede (CuBottom
+                        PadsBottom
+                        SilkBottom)
+                        Vias
+"""
+from flask import Flask, Response, json, request
 from flask_cors import CORS
+from gerbviewlib.boardview import BoardView
+from gerbviewlib.boardview.layer import (CuLayer,
+                                         PadsLayer,
+                                         SilkLayer,
+                                         ViasLayer)
+from gerbviewlib.renderer import Renderer
+from gerbviewlib.net_generator import NetGenerator
+
 
 app = Flask(__name__)
 CORS(app, origins="http://localhost:8000")
 
 
-def _parse_request_items():
-    files = request.files.getlist('files')
-    types = request.form.getlist('types')
-    items = []
-
-    for file_obj, layer_type in zip(files, types):
-        items.append((file_obj.filename, layer_type or 'unknown'))
-
-    return items
-
-
-def _build_svg(items, endpoint_name):
-    svg_lines = [
-        '<svg xmlns="http://www.w3.org/2000/svg" '
-        'viewBox="0 0 800 220" width="800" height="220">',
-        '  <rect width="100%" height="100%" fill="#111"/>',
-        '  <text x="20" y="32" fill="#fff" font-size="20">'
-        f'Endpoint: {endpoint_name}</text>',
-        '  <text x="20" y="60" fill="#ccc" font-size="14">'
-        'Uploaded files and parameters:</text>',
-    ]
-
-    if not items:
-        svg_lines.append(
-            '  <text x="20" y="100" fill="#f88" font-size="16">'
-            'No files were uploaded.</text>'
-        )
-    else:
-        for index, (filename, layer_type) in enumerate(items, start=1):
-            y = 70 + index * 20
-            svg_lines.append(
-                f'  <text x="20" y="{y}" fill="#aad" font-size="14">'
-                f'{index}. {filename} — {layer_type}</text>'
-            )
-
-    svg_lines.append('</svg>')
-    return '\n'.join(svg_lines)
-
-
 @app.route('/render', methods=['POST'])
 def render_route():
-    items = _parse_request_items()
-    svg_text = _build_svg(items, 'render')
-    return Response(svg_text, mimetype='image/svg+xml')
+    files_map = {f.filename: f for f in request.files.getlist(
+        'files') if f.filename}
+    boardview = BoardView()
+    for filename_type_meta in json.loads(request.form.get('metadata') or '[]'):
+        filename = filename_type_meta.get('filename')
+        layer_type = filename_type_meta.get('type')
+        if not layer_type:
+            continue
+        if file_obj := files_map.get(filename):
+            file_str = file_obj.read().decode()
+            if not file_str or not file_str.strip():
+                continue
+            if layer_type == "SilkTop":
+                boardview.textolite.top_layer.silk = SilkLayer(gerber_source=file_str)
+            elif layer_type == "PadsTop":
+                boardview.textolite.top_layer.pads = PadsLayer(gerber_source=file_str)
+            elif layer_type == "CuTop":
+                boardview.textolite.top_layer.cu = CuLayer(gerber_source=file_str)
+            elif layer_type == "Cu":
+                boardview.textolite.inner_cu_layers.append(
+                    CuLayer(gerber_source=file_str))
+            elif layer_type == "CuBottom":
+                boardview.textolite.bottom_layer.cu = CuLayer(gerber_source=file_str)
+            elif layer_type == "PadsBottom":
+                boardview.textolite.bottom_layer.pads = PadsLayer(gerber_source=file_str)
+            elif layer_type == "SilkBottom":
+                boardview.textolite.bottom_layer.silk = SilkLayer(gerber_source=file_str)
+            elif layer_type == "Vias":
+                boardview.textolite.vias = ViasLayer(gerber_source=file_str)
+    boardview.renderer = Renderer()
+    boardview.net_generator = NetGenerator()
+    return Response(boardview.render_svg(), mimetype='image/svg+xml')
 
 
 @app.route('/generate_net', methods=['POST'])
 def generate_net_route():
-    items = _parse_request_items()
-    svg_text = _build_svg(items, 'generate_net')
-    return Response(svg_text, mimetype='image/svg+xml')
+    return Response("Net generation completed.", mimetype='image/svg+xml')
 
 
 if __name__ == '__main__':

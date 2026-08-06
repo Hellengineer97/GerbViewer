@@ -23,13 +23,19 @@ function initRenderButton(buttonId, endpoint) {
         btn.textContent = 'Rendering...';
 
         const formData = new FormData();
+        const metadata = [];
 
         queueRows.forEach((row) => {
             const file = row._gbrFile;
-            const layerType = row.getAttribute('data-layer-type');
+            const layerType = row.getAttribute('data-layer-type') || 'unknown';
             formData.append('files', file, file.name);
-            formData.append('types', layerType);
+            metadata.push({ filename: file.name, type: layerType });
         });
+
+        // Recommended: send explicit metadata mapping filename->type
+        formData.append('metadata', JSON.stringify(metadata));
+        // Backwards compatibility: also send `types` fields as before
+        metadata.forEach(m => formData.append('types', m.type));
 
         try {
             const response = await fetch(`${API_BASE}${endpoint}`, {

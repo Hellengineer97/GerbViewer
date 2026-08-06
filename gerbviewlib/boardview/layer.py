@@ -9,11 +9,14 @@ from logic_textolite import (
     SilkLayer as BaseSilkLayer,
     PadsLayer as BasePadsLayer,
     TextoliteSide as BaseTextoliteSide,
+    ViasLayer as BaseViasLayer,
+    InnerCuLayers as BaseInnerCuLayers
 )
 
 from .pad import Pad
 from .shape import Shape
 from .trace import Trace
+from .via import Via
 
 from pygerber.gerber.api import GerberFile
 
@@ -112,6 +115,39 @@ class PadsLayer(BasePadsLayer, Layer):
             for shape in self._split_geometries(
                 self._pygerber_object.render_with_shapely()._result.shape)
         ]
+
+
+class ViasLayer(BaseViasLayer, Layer):
+    """Обёртка слоя переходных отверстий boardview."""
+
+    def __init__(
+        self,
+        gerber_source: str | Path | Any | None = None,
+        vias=None,
+    ):
+        BaseViasLayer.__init__(self, vias=vias)
+        Layer.__init__(self, gerber_source=gerber_source)
+
+    def _get_point_from_shapely_geom(self,
+                                     shapely_geom: BaseGeometry
+                                     ) -> tuple[float, float]:
+        """Преобразует геометрический объект Shapely в координаты."""
+        if shapely_geom is None:
+            raise ValueError('shapely_geom is None')
+        c = shapely_geom.centroid
+        return (float(c.x), float(c.y))
+
+    def _parse_gerber(self) -> None:
+        self.vias = [
+            Via(self._get_point_from_shapely_geom(self, shape))
+            for shape in self._split_geometries(
+                self._pygerber_object.render_with_shapely()._result.shape)
+        ]
+
+
+class InnerCuLayers(BaseInnerCuLayers):
+    """Обёртка внутреннего слоя меди boardview."""
+    pass
 
 
 class TextoliteSide(BaseTextoliteSide):

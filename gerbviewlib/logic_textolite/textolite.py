@@ -1,5 +1,4 @@
-from .layer import CuLayer, TextoliteSide
-from .via import Via
+from .layer import TextoliteSide, InnerCuLayers, ViasLayer
 
 
 class Textolite:
@@ -7,13 +6,13 @@ class Textolite:
 
     def __init__(
         self,
-        inner_cu_layers: list[CuLayer] | None = None,
+        inner_cu_layers: InnerCuLayers | None = None,
         top_layer: TextoliteSide | None = None,
         bottom_layer: TextoliteSide | None = None,
-        vias: list[Via] | None = None,
+        vias: ViasLayer | None = None,
     ):
         self.inner_cu_layers = (
-            inner_cu_layers if inner_cu_layers is not None else []
+            inner_cu_layers if inner_cu_layers is not None else InnerCuLayers()
         )
         self.top_layer = (
             top_layer if top_layer is not None else TextoliteSide()
@@ -21,4 +20,4 @@ class Textolite:
         self.bottom_layer = (
             bottom_layer if bottom_layer is not None else TextoliteSide()
         )
-        self.vias = vias if vias is not None else []
+        self.vias = vias if vias is not None else ViasLayer()

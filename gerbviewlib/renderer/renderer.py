@@ -46,7 +46,7 @@ class Renderer:
                          textolite: Textolite
                          ) -> Tuple[float, float, float, float]:
         """
-        Вычисляет min_x, min_y, width, height по геометриям `textolite`.
+        Вычисляет min_x, min_y, width, height по геометрии shapely в textolite.
         """
         min_x = float('inf')
         min_y = float('inf')
@@ -70,7 +70,7 @@ class Renderer:
         content = ''
         for layer in textolite.all_layers:
             if isinstance(layer, CuLayer):
-                content += self.get_g_svg_from_Cu_layer(layer)
+                content += self.get_g_svg_from_inner_Cu_layer(layer)
         rendered_svg = template.render(
             min_x=f"{min_x:.1f}",
             min_y=f"{min_y:.1f}",
