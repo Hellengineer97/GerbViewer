@@ -1,8 +1,7 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from typing import Tuple
 
-from ..boardview import Textolite
-from ..boardview import CuLayer
+from ..boardview import Textolite, CuLayer, SilkLayer, PadsLayer, Via
 from shapely.geometry.base import BaseGeometry
 from itertools import chain
 
@@ -33,14 +32,38 @@ class Renderer:
         )
         return f'<path class="{net_name}" tabindex="0" d="{d}" />'
 
-    def get_g_svg_from_inner_Cu_layer(self, Cu_layer: CuLayer) -> str:
+    def get_g_svg_from_Pads_layer(self,
+                                    Pads_layer: PadsLayer,
+                                    class_name: str = "PadsLayer") -> str:
+            """Генерирует path из слоя падов и пакует в его g тег"""
+            paths = []
+            for pad in Pads_layer.pads:
+                path = self.get_path_svg_from_Shapely_geom(
+                    pad.shapely_geom, pad.net)
+                paths.append(path)
+            return f'<g class="{class_name}">{"".join(paths)}</g>'
+
+    def get_g_svg_from_Silk_layer(self,
+                                  Silk_layer: SilkLayer,
+                                  class_name: str = "SilkLayer") -> str:
+        """Генерирует path из шелкографического слоя и пакует в его g тег"""
+        paths = []
+        for shape in Silk_layer.shapes:
+            path = self.get_path_svg_from_Shapely_geom(
+                shape.shapely_geom)
+            paths.append(path)
+        return f'<g class="{class_name}">{"".join(paths)}</g>'
+
+    def get_g_svg_from_Cu_layer(self,
+                                Cu_layer: CuLayer,
+                                class_name: str = "CuLayer") -> str:
         """Генерирует path из медного слоя и пакует в его g тег"""
         paths = []
         for trace in Cu_layer.traces:
             path = self.get_path_svg_from_Shapely_geom(
                 trace.shapely_geom, trace.net)
             paths.append(path)
-        return f'<g class="innerCuLayer">{"".join(paths)}</g>'
+        return f'<g class="{class_name}">{"".join(paths)}</g>'
 
     def calculate_bounds(self,
                          textolite: Textolite
@@ -70,12 +93,15 @@ class Renderer:
         content = ''
         for layer in textolite.all_layers:
             if isinstance(layer, CuLayer):
-                content += self.get_g_svg_from_inner_Cu_layer(layer)
-        rendered_svg = template.render(
+                content += self.get_g_svg_from_Cu_layer(layer)
+            elif isinstance(layer, SilkLayer):
+                content += self.get_g_svg_from_Silk_layer(layer)
+            elif isinstance(layer, PadsLayer):
+                content += self.get_g_svg_from_Pads_layer(layer)
+        return template.render(
             min_x=f"{min_x:.1f}",
             min_y=f"{min_y:.1f}",
             width=f"{width:.1f}",
             height=f"{height:.1f}",
             content=content,
         )
-        return rendered_svg

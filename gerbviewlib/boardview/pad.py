@@ -9,12 +9,12 @@ class Pad(BasePad):
     def __init__(
         self,
         shape=None,
-        net: str | None = None,
+        net: str = 'NoNameNet',
         component: str | None = None,
         name: str | None = None,
     ) -> None:
         super().__init__(shape)
-        self.net: str | None = net
+        self.net: str = net
         self.component: str | None = component
         self.name: str | None = name
 
