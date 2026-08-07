@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 
 from .layer import InnerCuLayers, Layer, TextoliteSide, ViasLayer
-from ..logic_textolite.textolite import Textolite as BaseTextolite
+from gerbviewlib.logic_textolite.textolite import Textolite as BaseTextolite
 
 
 class Textolite(BaseTextolite):
@@ -36,7 +36,7 @@ class Textolite(BaseTextolite):
             layers.append(self.top_layer.pads)
             layers.append(self.top_layer.cu)
         if self.inner_cu_layers:
-            layers.extend(self.inner_cu_layers)
+            layers.extend(self.inner_cu_layers.cu_layers)
         if self.bottom_layer:
             layers.append(self.bottom_layer.cu)
             layers.append(self.bottom_layer.pads)

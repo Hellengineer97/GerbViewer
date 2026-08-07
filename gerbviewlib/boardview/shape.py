@@ -1,7 +1,7 @@
 from shapely.geometry import GeometryCollection
 from shapely.geometry.base import BaseGeometry
 
-from logic_textolite.shape import Shape as BaseShape
+from gerbviewlib.logic_textolite.shape import Shape as BaseShape
 
 
 class Shape(BaseShape):

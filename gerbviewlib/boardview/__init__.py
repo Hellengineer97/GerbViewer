@@ -5,6 +5,7 @@ from .trace import Trace
 from .via import Via
 from .layer import CuLayer, SilkLayer, PadsLayer, TextoliteSide, Layer
 from .textolite import Textolite
+from .boardview import BoardView
 
 __all__ = [
     'Pad',
@@ -18,4 +19,5 @@ __all__ = [
     'PadsLayer',
     'TextoliteSide',
     'Textolite',
+    'BoardView',
 ]

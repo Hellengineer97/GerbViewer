@@ -3,7 +3,7 @@ from typing import Tuple
 
 from ..boardview import Textolite
 from ..boardview import CuLayer
-from shapely.geometry import BaseGeometry
+from shapely.geometry.base import BaseGeometry
 from itertools import chain
 
 env = Environment(

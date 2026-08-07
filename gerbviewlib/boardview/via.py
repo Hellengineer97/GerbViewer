@@ -1,6 +1,6 @@
 from shapely.geometry import Point as ShapelyPoint
 
-from logic_textolite import Via as BaseVia
+from gerbviewlib.logic_textolite import Via as BaseVia
 from .point import Point
 
 

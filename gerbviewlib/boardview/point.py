@@ -1,6 +1,6 @@
 from shapely.geometry import Point as ShapelyPoint
 
-from logic_textolite import Point as BasePoint
+from gerbviewlib.logic_textolite import Point as BasePoint
 
 
 class Point(BasePoint):

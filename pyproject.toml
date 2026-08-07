@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gerbviewer"
+version = "0.0.0"
+description = "Gerber viewer"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gerbviewlib*"]

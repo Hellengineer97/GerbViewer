@@ -1,6 +1,6 @@
 from shapely.geometry.base import BaseGeometry
 
-from logic_textolite import Pad as BasePad
+from gerbviewlib.logic_textolite import Pad as BasePad
 
 
 class Pad(BasePad):

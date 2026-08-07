@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from shapely.geometry.base import BaseGeometry
 
-from logic_textolite import (
+from gerbviewlib.logic_textolite import (
     Layer as BaseLayer,
     CuLayer as BaseCuLayer,
     SilkLayer as BaseSilkLayer,
@@ -24,15 +24,23 @@ GerberSource = str | Path | GerberFile
 
 
 def _load_gerber_source(source: str | Path | Any) -> Any:
-    if isinstance(source, (str, Path)):
-        return GerberFile.from_file(str(source))
-
     if isinstance(source, GerberFile):
         return source
 
+    if isinstance(source, Path):
+        if source.exists():
+            return GerberFile.from_file(source)
+        raise FileNotFoundError(f'Gerber file not found: {source}')
+
+    if isinstance(source, str):
+        p = Path(source)
+        if p.exists():
+            return GerberFile.from_file(p)
+        return GerberFile.from_str(source)
+
     raise TypeError(
-        'gerber_source должен быть путем к файлу или экземпляром '
-        'pygerber.GerberFile'
+        'gerber_source должен быть путем к файлу, '
+        'содержимым Gerber или экземпляром pygerber.GerberFile'
     )
 
 
@@ -41,9 +49,6 @@ class Layer(BaseLayer):
 
     def __init__(self, gerber_source: GerberSource):
         self._pygerber_object: GerberFile = _load_gerber_source(gerber_source)
-
-        if isinstance(gerber_source, (str, Path)):
-            self._gerber_source = Path(gerber_source)
 
         self._parse_gerber()
 
@@ -139,7 +144,7 @@ class ViasLayer(BaseViasLayer, Layer):
 
     def _parse_gerber(self) -> None:
         self.vias = [
-            Via(self._get_point_from_shapely_geom(self, shape))
+            Via(self._get_point_from_shapely_geom(shape))
             for shape in self._split_geometries(
                 self._pygerber_object.render_with_shapely()._result.shape)
         ]

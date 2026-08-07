@@ -1,6 +1,6 @@
 from shapely.geometry.base import BaseGeometry
 
-from logic_textolite import Trace as BaseTrace
+from gerbviewlib.logic_textolite import Trace as BaseTrace
 
 from .shape import Shape
 

@@ -1,6 +1,6 @@
-from net_generator import NetGenerator
-from .renderer import Renderer
-from .boardview import Textolite
+from gerbviewlib.net_generator import NetGenerator
+from gerbviewlib.renderer import Renderer
+from .textolite import Textolite
 
 
 class BoardView:
@@ -36,4 +36,4 @@ class BoardView:
         """Рендерит textolite в SVG с помощью renderer."""
         if self.renderer is None:
             raise ValueError("renderer не установлен.")
-        return self.renderer.render(self.textolite)
+        return self.renderer.renderSVG(self.textolite)

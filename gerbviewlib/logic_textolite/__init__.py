@@ -3,7 +3,15 @@
 Не содержит геометрических алгоритмов, выполняя роль высокоуровневого
 структурного контейнера для данных топологии.
 """
-from .layer import TextoliteSide, CuLayer, PadsLayer, SilkLayer
+from .layer import (
+    Layer,
+    TextoliteSide,
+    CuLayer,
+    PadsLayer,
+    SilkLayer,
+    ViasLayer,
+    InnerCuLayers,
+)
 from .pad import Pad
 from .point import Point
 from .shape import Shape
@@ -22,4 +30,7 @@ __all__ = [
     "Shape",
     "Trace",
     "Via",
+    "Layer",
+    "ViasLayer",
+    "InnerCuLayers",
 ]
